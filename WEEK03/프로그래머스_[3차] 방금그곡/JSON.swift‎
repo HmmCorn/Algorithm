@@ -1,0 +1,51 @@
+func solution(_ m:String, _ musicinfos:[String]) -> String {
+    var matched: (String, Int) = ("(None)", 0)  // 음악 제목 - 재생된 시간
+    let m = parseMusic(m)
+
+    
+    for info in musicinfos {
+        let (playTime, name, music) = parseMusicInfo(info)
+
+        let paddedMusic = String(repeating: music, count: playTime / music.count)
+            + music.prefix(playTime % (music.count))
+
+        if paddedMusic.contains(m) {
+            if matched.1 < playTime {
+                matched = (name, playTime)
+            }
+        }
+    }
+    
+    return matched.0
+}
+
+func parseMusicInfo(_ info: String) -> (Int, String, String) {
+    let info = info.components(separatedBy: ",")
+    let playTime = toMinute(info[1]) - toMinute(info[0])
+    let name = info[2]
+    let music = parseMusic(info[3])
+
+    return (playTime, name, music)
+}
+
+func toMinute(_ time: String) -> Int {
+    let time = time.components(separatedBy: ":").compactMap { Int($0) }
+    if let hour = time.first,
+       let minute = time.last {
+           return hour * 60 + minute
+       }
+    return 0
+}
+
+func parseMusic(_ music: String) -> String {
+    var result = [Character]()
+    for m in music {
+        if m == "#", let last = result.last {
+            result[result.count - 1] = Character(last.lowercased())
+            continue
+        }
+        result.append(m)
+    }
+    
+    return String(result)
+}
