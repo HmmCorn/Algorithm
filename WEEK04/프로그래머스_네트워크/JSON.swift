@@ -78,3 +78,34 @@ func solution(_ n:Int, _ computers:[[Int]]) -> Int {
     
     return result
 }
+
+// 시도 3. DFS로 풀어보기
+// func solution(_ n:Int, _ computers:[[Int]]) -> Int {
+//     var result = 0
+//     var vis = Array(repeating: false, count: n)
+    
+//     func dfs(_ com: Int) {
+//         var stack = [com]
+//         vis[com] = true
+        
+//         while !stack.isEmpty {
+//             let cur = stack.removeLast()
+            
+//             for (idx, isConnected) in computers[cur].enumerated() {
+//                 if !vis[idx] && isConnected == 1 {
+//                     stack.append(idx)
+//                     vis[idx] = true
+//                 }
+//             }
+//         }
+//     }
+    
+//     for com in 0..<n {
+//         if !vis[com] {
+//             dfs(com)
+//             result += 1
+//         }
+//     }
+    
+//     return result
+// }
