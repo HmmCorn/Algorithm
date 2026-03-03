@@ -17,7 +17,7 @@ for _ in 0..<n {
     for row in 0..<rowCount {
         for col in 0..<colCount {
             guard !vis[row][col] && grid[row][col] == 1 else { continue }
-            bfs(row, col)
+            dfsStack(row, col)
             result += 1
         }
     }
@@ -42,5 +42,31 @@ for _ in 0..<n {
             }
         }
     }
-}
 
+    func dfsStack(_ row: Int, _ col: Int) {
+        var stack = [(row, col)]
+        vis[row][col] = true
+
+        while let (curRow, curCol) = stack.popLast() {
+            for d in delta {
+                let (nextRow, nextCol) = (curRow + d.0, curCol + d.1)
+                guard (0..<rowCount).contains(nextRow) && (0..<colCount).contains(nextCol) else { continue }
+                guard !vis[nextRow][nextCol] && grid[nextRow][nextCol] == 1 else { continue }
+                stack.append((nextRow, nextCol))
+                vis[nextRow][nextCol] = true
+            }
+        }
+    }
+
+    func dfsRecursion(_ row: Int, _ col: Int) {
+        vis[row][col] = true
+
+        for d in delta {
+            let (nextRow, nextCol) = (row + d.0, col + d.1)
+            guard (0..<rowCount).contains(nextRow) && (0..<colCount).contains(nextCol) else { continue }
+            guard !vis[nextRow][nextCol] && grid[nextRow][nextCol] == 1 else { continue }
+            vis[nextRow][nextCol] = true
+            dfsRecursion(nextRow, nextCol)
+        }
+    }
+}
