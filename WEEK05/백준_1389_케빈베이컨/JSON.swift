@@ -79,7 +79,7 @@ func bfs(_ start: Int) -> Int {
         }
     }
 
-    return vis.reduce(0, +) + 1
+    return vis.dropFirst().reduce(0, +)
 }
 
 var result = 0
