@@ -1,12 +1,10 @@
 import Foundation
 
-func solution(_ tickets:[[String]]) -> [String] {    
-    var visited = [String: Bool]()
-    var graph = [String: [String]]()
+func solution(_ tickets:[[String]]) -> [String] {
+    let sortedTickets = tickets.sorted { $0[1] < $1[1] }
     
-    for ticket in tickets {
-        
-    }
+    var visited = Array(repeating: false, count: sortedTickets.count)
+    var result = [String]()
 
     func dfs(_ start: String, _ path: [String]) -> Bool {
         if path.count == sortedTickets.count + 1 {
