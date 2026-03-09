@@ -1,21 +1,23 @@
 // 백준 - 15649 N과 M
 
-let line = readLine()!.split(separator: " ").map { Int($0)! }
-let max: Int = line[0]
-let length: Int = line[1]
+let line = readLine()!.split(separator: " ").compactMap { Int($0) }
+let (max, length) = (line[0], line[1])
 
-for i in 1...max {
-    dfs([i], length, max)
-}
+var isUsed: [Bool] = Array(repeating: false, count: max)
+var arr: [Int] = Array(repeating: 0, count: length)
 
-func dfs(_ stack: [Int], _ length: Int, _ max: Int) {
-    guard stack.count != length else {
-        print(stack.map {String($0)}.joined(separator: " "))
+dfs(0)
+
+func dfs(_ currentSlot: Int) {
+    guard currentSlot != length else {
+        print(arr.map {String($0)}.joined(separator: " "))
         return
     }
 
-    let filtered = (1...max).filter { !stack.contains($0) }
-    for next in filtered {
-        dfs(stack + [next], length, max)
+    for next in 1...max where !isUsed[next - 1] {
+        isUsed[next - 1] = true
+        arr[currentSlot] = next
+        dfs(currentSlot + 1)
+        isUsed[next - 1] = false
     }
 }
