@@ -15,7 +15,7 @@ func dfs(_ depth: Int, _ start: Int) {
         if depth > 0 && result[depth - 1] > i+1 { continue }
 
         result[depth] = i+1
-        dfs(depth + 1, start)
+        dfs(depth + 1, i)
     }
 }
 
