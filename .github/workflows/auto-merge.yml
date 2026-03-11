@@ -1,0 +1,72 @@
+name: Auto Merge Bot
+
+on:
+  schedule:
+    - cron: '0 1 * * 1-4'  # KST 10:00 = UTC 01:00, 월~목
+  workflow_dispatch:
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+      issues: write
+
+    steps:
+      - name: Auto merge on time
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              base: 'main',
+            });
+
+            const addComment = async (prNumber, body) => {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            };
+
+            for (const pr of pullRequests) {
+              const prNumber = pr.number;
+              console.log(`\n--- Checking PR #${prNumber}: ${pr.title} ---`);
+
+              if (pr.draft) {
+                console.log(`PR #${prNumber} skipped: draft`);
+                await addComment(prNumber, '⏭️ Draft 상태라 자동 머지를 건너뜁니다.');
+                continue;
+              }
+
+              if (pr.mergeable === null) {
+                console.log(`PR #${prNumber} skipped: mergeability unknown`);
+                await addComment(prNumber, '⏳ 머지 가능 여부를 아직 확인할 수 없어 자동 머지를 건너뜁니다. 다음 실행 시 재시도됩니다.');
+                continue;
+              }
+
+              if (pr.mergeable === false) {
+                console.log(`PR #${prNumber} skipped: merge conflict`);
+                await addComment(prNumber, '⚠️ Conflict가 있어 자동 머지를 건너뜁니다. Conflict를 해결한 후 다음 머지 시간을 기다려주세요.');
+                continue;
+              }
+
+              try {
+                await github.rest.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber,
+                  merge_method: 'squash',
+                });
+                console.log(`PR #${prNumber} merged!`);
+              } catch (e) {
+                console.log(`PR #${prNumber} merge failed: ${e.message}`);
+                await addComment(prNumber, `❌ 자동 머지에 실패했습니다. 사유: ${e.message}`);
+              }
+            }
