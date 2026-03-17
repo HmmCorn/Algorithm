@@ -2,7 +2,7 @@
 
 // let M = readLine()!.split(separator: " ").compactMap { Int($0) }[1] <- 20ms 증가
 let firstLine = readLine()!.split(separator: " ").compactMap { Int($0) }
-let trees = readLine()!.split(separator: " ").compactMap { Int($0) }.sorted { $0 < $1 }
+let trees = readLine()!.split(separator: " ").compactMap { Int($0) }
 let M = firstLine[1]
 
 // 적어도 M을 가져가기 위한 절단기 높이 최댓값
