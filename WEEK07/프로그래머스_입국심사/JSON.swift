@@ -24,13 +24,14 @@ import Foundation
 
 
 
-// times 순회 최적화
+// 🍎 times 순회 early-exit
+// 🎨 이분 탐색 범위 조금 줄이기
 
 func solution(_ n:Int, _ times:[Int]) -> Int64 {
-    let maxDuration = n * times.max()!
+    let maxDuration = n * times.min()!
 
     var l = 0
-    var r = maxDuration
+    var r = n * times.min()!        // 🎨 max -> min
 
     while l <= r {
         let mid = (l + r) / 2
@@ -39,6 +40,7 @@ func solution(_ n:Int, _ times:[Int]) -> Int64 {
         for time in times {
             passedPeople += mid / time
 
+            // 🍎
             if passedPeople >= n {
                 break
             }
