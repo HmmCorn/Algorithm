@@ -1,5 +1,3 @@
-// 백준 - 1753 최단경로
-
 let firstLine = readLine()!.split(separator: " ").compactMap { Int($0) }
 let vertexCount = firstLine[0]
 let edgeCount = firstLine[1]
@@ -29,7 +27,7 @@ while !heap.isEmpty {
     }
 }
 
-(1...vertexCount).forEach { print(result[$0] == Int.max ? "INF" : result[$0]) }
+print((1...vertexCount).map { result[$0] == Int.max ? "INF" : String(result[$0]) }.joined(separator: "\n"))
 
 struct Heap<T> {
     var elements: [T]
